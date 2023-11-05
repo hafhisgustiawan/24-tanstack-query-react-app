@@ -2,13 +2,17 @@ import { QueryClient } from '@tanstack/react-query';
 
 export const queryClient = new QueryClient();
 
-export async function fetchEvents({ signal, keyword }) {
+export async function fetchEvents({ signal, keyword, max }) {
   //params signal ini adalah parameter yang diberikan react query untuk melakukan abort request, nice mantap gg, tinggal pakai aja di fetch api atau axios
   //kalo bingung sama parameter di atas, cek video 513
   let url = 'http://localhost:3000/events';
 
-  if (keyword) {
+  if (keyword && max) {
+    url += `?search=${keyword}&max=${max}`;
+  } else if (keyword) {
     url += `?search=${keyword}`;
+  } else if (max) {
+    url += `?max=${max}`;
   }
 
   const response = await fetch(url, { signal });
@@ -87,6 +91,25 @@ export async function deleteEvent({ id }) {
 
   if (!response.ok) {
     const error = new Error('An error occurred while deleting the event');
+    error.code = response.status;
+    error.info = await response.json();
+    throw error;
+  }
+
+  return response.json();
+}
+
+export async function updateEvent({ id, event }) {
+  const response = await fetch(`http://localhost:3000/events/${id}`, {
+    method: 'PUT',
+    body: JSON.stringify({ event }),
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  });
+
+  if (!response.ok) {
+    const error = new Error('An error occurred while updating the event');
     error.code = response.status;
     error.info = await response.json();
     throw error;

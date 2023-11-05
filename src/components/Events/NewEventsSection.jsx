@@ -1,16 +1,17 @@
-import { useQuery } from "@tanstack/react-query";
-import LoadingIndicator from "../UI/LoadingIndicator.jsx";
-import ErrorBlock from "../UI/ErrorBlock.jsx";
-import EventItem from "./EventItem.jsx";
-import { fetchEvents } from "../../utils/http.js";
+import { useQuery } from '@tanstack/react-query';
+import LoadingIndicator from '../UI/LoadingIndicator.jsx';
+import ErrorBlock from '../UI/ErrorBlock.jsx';
+import EventItem from './EventItem.jsx';
+import { fetchEvents } from '../../utils/http.js';
 
 export default function NewEventsSection() {
   //error disini akan true jika di queryFn nya itu pakai throw
   const { data, isPending, isError, error } = useQuery({
     //query key is for identifier that can be use again with cache, that can be string or object or other
-    queryKey: ["events"],
+    queryKey: ['events', { max: 3 }],
     //react query wants a func that return promise, that is it
-    queryFn: fetchEvents,
+    //queryKey di parameter dibawah adalah yang di buat di line 11
+    queryFn: ({ signal, queryKey }) => fetchEvents({ signal, ...queryKey[1] }),
     // staleTime:fet 5000, //default value is 0, this set time for refetch data
     // gcTime: 1000, //default is 5 minutes, this set time how long cache will be saved
   });
@@ -25,7 +26,7 @@ export default function NewEventsSection() {
     content = (
       <ErrorBlock
         title="An error occurred"
-        message={error?.info?.message || "Failed to fetch events"}
+        message={error?.info?.message || 'Failed to fetch events'}
       />
     );
   }
