@@ -14,7 +14,7 @@ export default function EditEvent() {
   const { data, isError, error } = useQuery({
     queryKey: ['events', id],
     queryFn: ({ signal }) => fetchEvent({ id, signal }),
-    staleTime: 10000,
+    staleTime: 10000, //ini akan membelikan jeda waktu 10 detik untuk tiap fetch ya
   });
 
   const { mutate } = useMutation({
@@ -29,12 +29,13 @@ export default function EditEvent() {
       //this will be call exactly after mutate() called
       //you can change cache data here
 
-      //cancel queries ini tidak akan cancel mutation, tapi hanya useQuery
+      //cancel queries ini tidak akan cancel mutation, tapi hanya useQuery yang sedang berjalan agar tidak terjadi kesalahan fetch data
       await queryClient?.cancelQueries({ queryKey: ['events', id] });
 
       //rollback data if fail
       const prevData = queryClient?.getQueryData(['events', id]);
 
+      //ini seperti state redux ya, jadi akan memicu re-render
       queryClient?.setQueryData(['events', id], data?.event);
 
       //return ini akan bisa dibaca di blok error context dibawah

@@ -1,5 +1,6 @@
 import { QueryClient } from '@tanstack/react-query';
 
+//SEHARUSNYA INI BISA PAKE USEQUERYCLIENT AJA DI COMPONENT NYA GES
 export const queryClient = new QueryClient();
 
 export async function fetchEvents({ signal, keyword, max }) {
