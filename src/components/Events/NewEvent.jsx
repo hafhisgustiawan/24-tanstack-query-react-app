@@ -21,6 +21,7 @@ export default function NewEvent() {
   });
 
   function handleSubmit(formData) {
+    // kita bisa menambahkan parameter dan ini akan diteruskan ke mutationFn
     mutate({ event: formData });
   }
 

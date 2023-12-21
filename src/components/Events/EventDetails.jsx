@@ -49,6 +49,7 @@ export default function EventDetails() {
   };
 
   const handleDelete = () => {
+    // kita bisa menambahkan parameter dan ini akan diteruskan ke mutationFn
     mutateDeletion({ id });
   };
 
